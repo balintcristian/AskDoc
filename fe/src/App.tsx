@@ -30,18 +30,22 @@ function App() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(query), // body data type must match "Content-Type" header
+      body: JSON.stringify(query),
     });
-    console.log(response.json());
     return response.json();
   };
-  const handleSendData = async () => {
+
+  const handleSendData = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!questionField.trim() || !answerField.trim()) {
+      alert("Both question and answer fields are required.");
+      return;
+    }
     try {
       const newData = await postData(questionField, answerField);
       if (newData) {
         setData((prevstate) => [...prevstate, newData]);
       }
-
       setQuestionField("");
       setAnswerField("");
     } catch (error) {
@@ -67,7 +71,7 @@ function App() {
           )
         )}
       </ul>
-      <form>
+      <form onSubmit={handleSendData}>
         <label htmlFor="q">Question:</label>
         <br></br>
         <input
@@ -75,7 +79,7 @@ function App() {
           id="q"
           name="q"
           onChange={(e) => {
-            setQuestionField(e.target.value ? e.target.value : "");
+            setQuestionField(e.target.value);
           }}
         ></input>
         <br></br>
@@ -85,13 +89,11 @@ function App() {
           id="a"
           name="a"
           onChange={(e) => {
-            setAnswerField(e.target.value ? e.target.value : "");
+            setAnswerField(e.target.value);
           }}
         ></input>
         <br></br>
-        <button type="submit" onClick={handleSendData}>
-          Submit query
-        </button>
+        <button type="submit">Submit query</button>
       </form>
     </>
   );
