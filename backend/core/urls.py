@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-
+from queries.api import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('core.api.urls')),
+    path('upload-pdf/', views.file_to_api, name='upload-pdf'),
+    path('ask-question/', views.ask_question, name='ask-question'),
+
 ]
