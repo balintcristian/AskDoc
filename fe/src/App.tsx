@@ -4,7 +4,7 @@ interface Query {
   id: number;
   question: string;
   answer: string;
-  conversationId: number;
+  conversation: number;
 }
 interface Conversation {
   id: number;
@@ -12,6 +12,7 @@ interface Conversation {
   pdf: File;
   sourceId: string;
   uploadDate: Date;
+  Queries?: Query[];
 }
 interface selectConvInterface {
   id: number;
@@ -21,12 +22,6 @@ const addPdfEndpoint = `${import.meta.env.VITE_UPLOAD_PDF}`;
 const queriesEndpoint = `${import.meta.env.VITE_API_URL}queries/`;
 const conversationsEndpoint = `${import.meta.env.VITE_API_URL}conversations/`;
 const askQuestionEndpoint = `${import.meta.env.VITE_ASK_QUESTION}`;
-console.log(
-  addPdfEndpoint,
-  conversationsEndpoint,
-  queriesEndpoint,
-  askQuestionEndpoint
-);
 
 const ConversationWidget = ({
   conversationData,
@@ -41,8 +36,14 @@ const ConversationWidget = ({
       <ul>
         {conversationData.map((el) => (
           <li
+            className="unSelected"
             key={el.id}
-            onClick={() => {
+            onClick={(e) => {
+              const lists = document.getElementsByTagName("li");
+              for (let i = 0; i < lists.length; i++) {
+                lists[i].className = "unSelected";
+              }
+              e.currentTarget.className = "Selected";
               setSelectedConversation({ id: el.id, sourceId: el.sourceId });
             }}
           >
@@ -64,35 +65,42 @@ function App() {
   const [fileField, setFileField] = useState<File>();
   const [selectedConversation, setSelectedConversation] =
     useState<selectConvInterface>();
+
+  useEffect(() => {
+    console.log(queryData);
+  }, [queryData]);
+
   const fetchData = async () => {
     try {
       const response = await fetch(queriesEndpoint);
       if (!response.ok) {
-        throw new Error("Network response was not ok 1");
+        throw new Error("Queries network response was not ok");
       }
-      const res = await response.json();
-      res.forEach((element: any) => {
-        console.log(element);
+
+      const data = await response.json();
+      data.forEach((query: Query) => {
+        console.log(query.conversation);
       });
-      setQueryData(res);
+      setQueryData(data);
     } catch (error) {
       console.log(error);
     }
+
     try {
       const response = await fetch(conversationsEndpoint);
       if (!response.ok) {
-        throw new Error("Network response was not ok 2");
+        throw new Error("Conversations network response was not ok ");
       }
-      const res = await response.json();
-      res.forEach((element: any) => {
-        console.log(element);
+      const data = await response.json();
+      data.forEach((conversation: Conversation) => {
+        console.log(conversation);
       });
-      setConversationData(res);
+      setConversationData(data);
     } catch (error) {
       console.log(error);
     }
   };
-  const askQuestion = async (query: string) => {
+  const askQuestion = async (query: string): Promise<string> => {
     const response = await fetch(askQuestionEndpoint, {
       method: "POST",
       headers: {
@@ -104,7 +112,6 @@ function App() {
       }),
     });
     const responseData = await response.json();
-    console.log(responseData.answer);
     return responseData.answer;
   };
 
@@ -112,7 +119,7 @@ function App() {
     const query = {
       question: question,
       answer: answer,
-      conversationId: selectedConversation?.id,
+      conversation: selectedConversation?.id,
     };
     const response = await fetch(queriesEndpoint, {
       method: "POST",
@@ -151,13 +158,15 @@ function App() {
       alert("Question field is required");
       return;
     }
+    if (!selectedConversation) {
+      alert("A conversation should be selected");
+      return;
+    }
     try {
-      let newData;
-      if (selectedConversation)
-        newData = await postData(
-          questionField,
-          await askQuestion(questionField)
-        );
+      const newData = await postData(
+        questionField,
+        await askQuestion(questionField)
+      );
       if (newData) {
         setQueryData((prevstate) => [...prevstate, newData]);
       }
@@ -175,6 +184,7 @@ function App() {
       } catch (error) {
         console.log(error);
       }
+    else alert("upload file");
   };
   useEffect(() => {
     fetchData();
@@ -192,17 +202,17 @@ function App() {
         />
       )}
       <div className="chat">
-        <ul>
-          {queryData.map((el) =>
-            el ? (
+        <ul className="queries">
+          {queryData &&
+            queryData.map((el) => (
               <li key={el.id}>
-                <div key={el.id}>Question: {el.question}</div>
-                <div key={el.id}>Answer: {el.answer}</div>
+                <div>
+                  Id: {el.id} ConversationID: {el.conversation}
+                </div>
+                <div>Question: {el.question}</div>
+                <div>Answer: {el.answer}</div>
               </li>
-            ) : (
-              <></>
-            )
-          )}
+            ))}
         </ul>
 
         <form onSubmit={handleSendData}>
@@ -243,7 +253,7 @@ function App() {
           ></input>
           <br></br>
           <br></br>
-          <button type="submit">Submit query</button>
+          <button type="submit">Upload pdf</button>
         </form>
       </div>
     </div>

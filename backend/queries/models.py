@@ -9,6 +9,6 @@ class Conversation(models.Model):
 class Query(models.Model):
     question = models.TextField()
     answer = models.TextField()
-    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return f"CoversationId: {self.conversation_id} QueryId: {self.pk} \n Query answer: {self.answer} \n Query question: {self.question} "
+        return f"CoversationId: {self.conversation} QueryId: {self.pk} \n Query answer: {self.answer} \n Query question: {self.question} "

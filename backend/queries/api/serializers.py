@@ -10,4 +10,4 @@ class ConversationSerializer(ModelSerializer):
 class QuerySerializer(ModelSerializer):
     class Meta:
         model = Query
-        fields = ('id', 'question', 'answer', 'conversation_id')
+        fields = ('id', 'question', 'answer', 'conversation')

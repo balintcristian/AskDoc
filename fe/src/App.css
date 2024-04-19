@@ -4,13 +4,27 @@
   width: 100vw;
   flex-direction: row;
   justify-content: center;
-  gap: 5px;
+  gap: 5%;
 }
 .conversationWidget {
-  width: 35%;
+  padding: 2% 0px;
+  width: 25%;
+  border-right: 2px solid royalblue;
+}
+.Selected {
+  border: 1px solid black;
 }
 .chat {
-  width: 65%;
+  padding: 2% 0px;
+  width: 55%;
+}
+/* .queries::-webkit-scrollbar {
+  display: none;
+} */
+.queries {
+  height: 65%;
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 a {
   font-weight: 500;
