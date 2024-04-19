@@ -18,13 +18,15 @@
   padding: 2% 0px;
   width: 55%;
 }
-/* .queries::-webkit-scrollbar {
+.queries::-webkit-scrollbar {
   display: none;
-} */
+}
 .queries {
   height: 65%;
+  width: 100%;
+  margin: 3% 0px;
   overflow-x: scroll;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 a {
   font-weight: 500;
@@ -41,8 +43,12 @@ h1 {
 }
 ul {
   list-style: none;
-  padding: 0px 10px;
   margin: 0;
+  padding-inline-start: 0px;
+}
+
+div.chat ul li:not(:last-child) {
+  border-bottom: 1px solid royalblue;
 }
 
 button {
