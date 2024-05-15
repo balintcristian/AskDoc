@@ -10,9 +10,27 @@
   padding: 2% 0px;
   width: 25%;
   border-right: 2px solid royalblue;
+  display: flex;
+  flex-direction: column;
 }
 .Selected {
   border: 1px solid black;
+}
+.createConversation {
+  margin-top: auto;
+}
+.dialogButton {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  border-color: black;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  transition: border-color 0.25s;
 }
 .chat {
   padding: 2% 0px;
@@ -21,6 +39,7 @@
 .queries::-webkit-scrollbar {
   display: none;
 }
+
 .queries {
   height: 65%;
   width: 100%;
@@ -64,6 +83,11 @@ button {
 }
 button:hover {
   border-color: #646cff;
+}
+
+button.dialogButton:hover {
+  border-color: red;
+  color: red;
 }
 button:focus,
 button:focus-visible {

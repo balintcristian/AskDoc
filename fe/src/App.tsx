@@ -30,6 +30,43 @@ const ConversationWidget = ({
   conversationData: Conversation[];
   setSelectedConversation: (conv: selectConvInterface) => void;
 }) => {
+  const [fileField, setFileField] = useState<File | null>();
+  useEffect(() => {
+    console.log(fileField);
+  }, [fileField]);
+  const postPdf = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await fetch(addPdfEndpoint, {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to upload PDF");
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      throw error;
+    }
+  };
+  const uploadPdf = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (fileField)
+      try {
+        let response = await postPdf(fileField);
+        const sourceId = response["sourceId"];
+        if (sourceId) console.log(sourceId);
+        else
+          throw Error(
+            `\nstatus: ${response["status"]}, errorType: ${response["errorType"]}, sizeInBytes: ${response["sizeInBytes"]}`
+          );
+      } catch (error) {
+        console.error(error);
+      }
+    else alert("upload file");
+  };
   return (
     <div className="conversationWidget">
       <h2>Conversations</h2>
@@ -38,10 +75,14 @@ const ConversationWidget = ({
           <li
             className="unSelected"
             key={el.id}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               const lists = document.getElementsByTagName("li");
               for (let i = 0; i < lists.length; i++) {
-                lists[i].className = "unSelected";
+                if (
+                  lists[i].className == "unSelected" ||
+                  lists[i].className == "Selected"
+                )
+                  lists[i].className = "unSelected";
               }
               e.currentTarget.className = "Selected";
               setSelectedConversation({ id: el.id, sourceId: el.sourceId });
@@ -54,6 +95,72 @@ const ConversationWidget = ({
           </li>
         ))}
       </ul>
+      <div className="createConversation">
+        <dialog>
+          <form onSubmit={uploadPdf} className="test">
+            <input
+              type="file"
+              id="f"
+              name="f"
+              accept=".pdf"
+              style={{ display: "none" }}
+              title=""
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files[0]) {
+                  const ext = files[0].type;
+                  if (ext === "application/pdf") {
+                    setFileField(files[0]);
+                  } else {
+                    e.target.value = "";
+                    alert("wrong file format");
+                  }
+                }
+              }}
+            ></input>
+            <label htmlFor="f" id="fl"></label>
+            <button
+              type="button"
+              className="dialogButton"
+              onClick={() => {
+                document.getElementById("f")?.click();
+              }}
+            >
+              Select PDF...
+            </button>
+            <br></br>
+            <br></br>
+            <button type="submit">Upload pdf</button>
+            <button
+              type="button"
+              onClick={() => {
+                const dialog = document.querySelector("dialog");
+                const inputField = document.querySelector(
+                  "#f"
+                ) as HTMLInputElement;
+                if (dialog && inputField) {
+                  inputField.value = "";
+                  setFileField(null);
+                  dialog.close();
+                }
+              }}
+            >
+              Cancel
+            </button>
+          </form>
+        </dialog>
+        <button
+          onClick={() => {
+            const dialog = document.querySelector("dialog");
+            if (!dialog?.open) {
+              setFileField(null);
+              dialog?.showModal();
+            }
+          }}
+        >
+          Create Conversation
+        </button>
+      </div>
     </div>
   );
 };
@@ -62,7 +169,7 @@ function App() {
   const [queryData, setQueryData] = useState<Query[]>([]);
   const [conversationData, setConversationData] = useState<Conversation[]>([]);
   const [questionField, setQuestionField] = useState("");
-  const [fileField, setFileField] = useState<File>();
+
   const [selectedConversation, setSelectedConversation] =
     useState<selectConvInterface>();
 
@@ -131,23 +238,6 @@ function App() {
     return response.json();
   };
 
-  const postPdf = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const response = await fetch(addPdfEndpoint, {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        throw new Error("Failed to upload PDF");
-      }
-      return response.json();
-    } catch (error) {
-      console.error("Error uploading PDF:", error);
-      throw error;
-    }
-  };
   useEffect(() => {
     console.log(selectedConversation);
   }, [selectedConversation]);
@@ -175,23 +265,9 @@ function App() {
       console.log(error);
     }
   };
-  const uploadPdf = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (fileField)
-      try {
-        let response = await postPdf(fileField);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    else alert("upload file");
-  };
   useEffect(() => {
     fetchData();
   }, []);
-  useEffect(() => {
-    console.log(fileField);
-  }, [fileField]);
 
   return (
     <div className="main-container">
@@ -229,31 +305,6 @@ function App() {
           ></input>
           <br></br>
           <button type="submit">Submit query</button>
-        </form>
-        <form onSubmit={uploadPdf}>
-          <label htmlFor="f">Upload pdf</label>
-
-          <input
-            type="file"
-            id="f"
-            name="f"
-            accept=".pdf"
-            onChange={(e) => {
-              const files = e.target.files;
-              if (files) {
-                const ext = files[0].type;
-                if (ext === "application/pdf") {
-                  setFileField(files[0]);
-                } else {
-                  e.target.value = "";
-                  alert("wrong file format");
-                }
-              }
-            }}
-          ></input>
-          <br></br>
-          <br></br>
-          <button type="submit">Upload pdf</button>
         </form>
       </div>
     </div>
