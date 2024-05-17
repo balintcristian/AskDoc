@@ -57,8 +57,27 @@ const ConversationWidget = ({
       try {
         let response = await postPdf(fileField);
         const sourceId = response["sourceId"];
-        if (sourceId) console.log(sourceId);
-        else
+        if (sourceId) {
+          try {
+            const formData = new FormData();
+            formData.append("name", fileField.name);
+            formData.append("pdf", fileField);
+            formData.append("sourceId", sourceId);
+            const response = await fetch(conversationsEndpoint, {
+              method: "POST",
+              body: formData,
+            });
+            if (!response.ok) {
+              throw new Error("Failed to upload PDF");
+            } else {
+              document.querySelector("dialog")?.close();
+            }
+            return response.json();
+          } catch (error) {
+            console.error("Error uploading PDF:", error);
+            throw error;
+          }
+        } else
           throw Error(
             `\nstatus: ${response["status"]}, errorType: ${response["errorType"]}, sizeInBytes: ${response["sizeInBytes"]}`
           );
