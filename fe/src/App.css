@@ -3,21 +3,57 @@
   height: 100vh;
   width: 100vw;
   flex-direction: row;
-  justify-content: center;
-  gap: 5%;
 }
 .conversationWidget {
-  padding: 2% 0px;
-  width: 25%;
-  border-right: 2px solid royalblue;
+  word-break: break-word;
+  padding: 0 1.5vw;
+  width: 12%;
   display: flex;
   flex-direction: column;
 }
-.Selected {
-  border: 1px solid black;
+.loading {
+  margin: auto;
+  font-size: large;
+  font-weight: bold;
+}
+.conversationWidget h2 {
+  word-break: normal;
+}
+.conversationWidget:after {
+  margin-left: 1%;
+  margin-right: 1%;
+  content: "";
+  background-color: royalblue;
+  position: absolute;
+  width: 3px;
+  top: 2vh;
+  height: 96vh;
+  left: 15%;
+  display: block;
+}
+.conversationWidget ul {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+.conversationWidget ul li {
+  border-top: 1px solid royalblue;
+  border-bottom: 1px solid royalblue;
+}
+.pdfDate {
+  font-size: 1.2vh;
+}
+.conversationWidget ul li.Selected {
+  border: 1px solid royalblue;
 }
 .createConversation {
-  margin-top: auto;
+  margin-top: 20%;
+}
+.createConversationButton {
+  max-width: 100%;
+  min-width: 60px;
+  font-size: small;
+  word-wrap: break-word;
 }
 .dialogButton {
   border-radius: 8px;
@@ -32,21 +68,61 @@
   cursor: pointer;
   transition: border-color 0.25s;
 }
+.headline {
+  font-size: x-large;
+  font-weight: bold;
+}
 .chat {
+  margin-left: auto;
+  margin-right: auto;
   padding: 2% 0px;
-  width: 55%;
+  max-width: 80%;
+  min-height: 1%;
 }
-.queries::-webkit-scrollbar {
-  display: none;
-}
-
-.queries {
-  height: 65%;
+.queries-container {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
   width: 100%;
-  margin: 3% 0px;
+  height: 80%;
+}
+.queries {
+  height: 90%;
+  width: 50%;
+  margin: 3% auto;
   overflow-x: scroll;
   overflow-y: auto;
 }
+.questionLabel {
+  width: 26%;
+  align-self: center;
+}
+.questionField {
+  width: 100%;
+  align-self: center;
+}
+.questionButton {
+  align-self: center;
+}
+.questionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 35%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.questionForm input[type="text" i] {
+  padding-block: 0px;
+  padding-inline: 0px;
+}
+.queries::-webkit-scrollbar {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

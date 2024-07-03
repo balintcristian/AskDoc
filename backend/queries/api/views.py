@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import json
 from django.shortcuts import render
+
 global api_key
 api_key=os.environ.get("API_KEY")
 load_dotenv()
@@ -30,27 +31,23 @@ def ask_question(request):
             data = json.loads(request.body)
             question = data.get('question')
             sourceId = data.get('sourceId')
-            print("sourceId:", sourceId)
-            print("Received question:", question)
             if not question:
                 return JsonResponse({'error': 'Question is missing'}, status=400)
             if not sourceId:
                 return JsonResponse({'error': 'SourceId is missing'}, status=400)
-            api_url = 'https://api.chatpdf.com/v1/chats/message'
-            print("sourceId after if checks:", sourceId)
-            payload = {'sourceId': sourceId, 'messages': [{'role': "user", 'content': question}]}
+            api_url = os.environ.get('ChatPDF_API')
+            payload = {'sourceId': sourceId, 'messages': [{'role': "user", 'content': question}]}            
             print("Data object before being posted:", payload)
             headers = {'x-api-key': api_key, "Content-Type": "application/json"}
             print("Headers object before being posted:", headers)
             response = requests.post(api_url, json=payload, headers=headers)
             response_data = response.json()
             print("Response inside try block:", response)
-            print("ResponseData inside try block:", response_data)
             answer = response_data.get('content')
-            if answer:
+            if answer is not None:
                 return JsonResponse({'answer': answer})
             else:
-                return JsonResponse({'error': 'Failed to get answer from API'}, status=500)
+                return JsonResponse({'error': 'No answer available from API'}, status=404)
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON format in request body'}, status=400)
         except requests.RequestException as e:
