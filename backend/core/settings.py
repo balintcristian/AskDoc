@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG =True
 
-ALLOWED_HOSTS =[]
+ALLOWED_HOSTS =['*']
  
 # Application definition
 INSTALLED_APPS = [
@@ -24,8 +24,8 @@ INSTALLED_APPS = [
     'queries',
 
 ]
-CORS_ALLOWED_ORIGINS=['http://localhost:5173','http://localhost:4173']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:5173','http://localhost:4173']
+CORS_ALLOWED_ORIGINS=['http://localhost:5173']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:5173']
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -90,8 +90,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-STATIC_URL = 'static/'
-
+#STATIC_ROOT = (os.path.join(SITE_ROOT, 'static_files/'))
+STATIC_URL='static/'
+# SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+# STATICFILES_DIRS = (
+#   os.path.join(SITE_ROOT, 'static/'),
+# )
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

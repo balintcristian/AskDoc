@@ -9,20 +9,24 @@ import os
 import json
 from django.shortcuts import render
 
+
+
 global api_key
 api_key=os.environ.get("API_KEY")
 load_dotenv()
+
 class QueryViewSet(ModelViewSet):
     queryset = Query.objects.all()
     serializer_class = QuerySerializer
 
-
 class ConversationViewSet(ModelViewSet):
-    queryset=Conversation.objects.all()
+    queryset = Conversation.objects.all()
     serializer_class= ConversationSerializer
-    
+
+
 def home(request):
     return render(request, 'home.html',{})
+
 @csrf_exempt
 def ask_question(request):
     if request.method == 'POST':
