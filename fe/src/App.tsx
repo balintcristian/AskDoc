@@ -1,28 +1,25 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { askQuestion, postQuery } from "./utilities/fetchFunctions";
-import {
-  Query,
-  Conversation,
-  selectConvInterface,
-} from "./types/DataInterfaces";
-import { queriesEndpoint, conversationsEndpoint } from "./utilities/endpoints";
-import ConversationWidget from "./components/ConversationWidget/ConversationWidget";
+import { askQuestion, postQuery } from "./helpers/fetchFunctions";
+import { Query, Conversation, selectConvInterface } from "./types/DataInterfaces";
+import { queriesEndpoint, conversationsEndpoint } from "./helpers/endpoints";
+import ConversationsWidget from "./components/ConversationsWidget/ConversationsWidget";
 import QueriesWidget from "./components/QueriesWidget/QueriesWidget";
 function App() {
   const [queryData, setQueryData] = useState<Query[]>([]);
-  const [conversationData, setConversationData] = useState<Conversation[]>();
-  const [selectedConversation, setSelectedConversation] = useState<
-    selectConvInterface[]
-  >([]);
+  const [conversationData, setConversationData] = useState<Conversation[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<selectConvInterface[]>([]);
   const [questionField, setQuestionField] = useState("");
   useEffect(() => {
     fetchQueries();
     fetchConversations();
   }, []);
   useEffect(() => {
-    const scrollHeight = document.querySelector(".queries")?.scrollHeight;
-    scrollHeight && document.querySelector(".queries")?.scroll(0, scrollHeight);
+    const queryElementsList = document.getElementsByClassName("queries");
+    if (queryElementsList)
+      for (let i = 0; i < queryElementsList.length; i++) {
+        queryElementsList[i].scrollTo(0, queryElementsList[i].scrollHeight);
+      }
   }, [queryData]);
   const fetchQueries = async () => {
     try {
@@ -30,9 +27,7 @@ function App() {
       if (!response.ok) {
         throw new Error("Queries network response was not ok");
       }
-
-      const data = await response.json();
-      setQueryData(data);
+      setQueryData(await response.json());
     } catch (error) {
       console.log(error);
     }
@@ -44,8 +39,7 @@ function App() {
       if (!response.ok) {
         throw new Error("Conversations network response was not ok ");
       }
-      const data = await response.json();
-      setConversationData(data);
+      setConversationData(await response.json());
     } catch (error) {
       console.log(error);
     }
@@ -55,10 +49,6 @@ function App() {
     event.preventDefault();
     if (!questionField.trim()) {
       alert("Question field is required");
-      return;
-    }
-    if (selectedConversation.length < 1) {
-      alert("A conversation should be selected");
       return;
     }
     try {
@@ -79,41 +69,42 @@ function App() {
   return (
     <div className="main-container">
       {conversationData && (
-        <ConversationWidget
+        <ConversationsWidget
           conversationData={conversationData}
           setConversationData={setConversationData}
           selectedConversation={selectedConversation}
           setSelectedConversation={setSelectedConversation}
         />
       )}
+      <div className="vbar"></div>
       {selectedConversation.length > 0 ? (
         <div className="chat">
-          <div className="queries-container">
-            {selectedConversation.map((el, idx) => (
-              <QueriesWidget queryData={queryData} convId={el.id} key={idx} />
-            ))}
-          </div>
-          {selectedConversation.length > 0 && (
-            <form className="questionForm" onSubmit={handleSendData}>
-              <div className="questionLabel">Question:</div>
-              <input
-                type="text"
-                id="q"
-                name="q"
-                className="questionField"
-                value={questionField}
-                onChange={(e) => {
-                  setQuestionField(e.target.value);
-                }}
-              ></input>
-              <button className="questionButton" type="submit">
-                Submit query
-              </button>
-            </form>
+          {queryData.length > 0 && (
+            <div className="queries-container">
+              {selectedConversation.map((el, idx) => (
+                <QueriesWidget queryData={queryData} convId={el.id} key={idx} />
+              ))}
+            </div>
           )}
+          <form className="questionForm" onSubmit={handleSendData}>
+            <div className="questionLabel">Question:</div>
+            <input
+              type="text"
+              id="q"
+              name="q"
+              className="questionField"
+              value={questionField}
+              onChange={(e) => setQuestionField(e.target.value)}
+            />
+            <button className="questionButton" type="submit">
+              Submit query
+            </button>
+          </form>
         </div>
+      ) : conversationData.length < 1 ? (
+        <div className="loading">Createa a conversation</div>
       ) : (
-        <div className="loading">Conversation must be selected..</div>
+        <div className="loading">Click on conversations to select them</div>
       )}
     </div>
   );

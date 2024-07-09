@@ -7,9 +7,15 @@
 .conversationWidget {
   word-break: break-word;
   padding: 0 1.5vw;
-  width: 12%;
   display: flex;
+  gap: 1vh;
   flex-direction: column;
+  resize: horizontal;
+  overflow-x: scroll;
+  overflow-x: auto;
+}
+.conversationWidget::-webkit-scrollbar {
+  display: none;
 }
 .loading {
   margin: auto;
@@ -19,32 +25,40 @@
 .conversationWidget h2 {
   word-break: normal;
 }
-.conversationWidget:after {
-  margin-left: 1%;
-  margin-right: 1%;
+
+.vbar {
+  margin-top: 1%;
+  margin-bottom: 1%;
   content: "";
   background-color: royalblue;
-  position: absolute;
   width: 3px;
-  top: 2vh;
-  height: 96vh;
-  left: 15%;
   display: block;
 }
 .conversationWidget ul {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 1.2vw;
+}
+input[type="checkbox"] {
+  margin-left: auto;
+  right: 0;
+  padding: 50px;
 }
 .conversationWidget ul li {
-  border-top: 1px solid royalblue;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5vw;
+}
+.conversationWidget ul li div.unSelected {
   border-bottom: 1px solid royalblue;
+  display: flex;
+  flex-direction: column;
 }
 .pdfDate {
   font-size: 1.2vh;
 }
-.conversationWidget ul li.Selected {
-  border: 1px solid royalblue;
+.Selected {
+  border-bottom: 3px solid red;
 }
 .createConversation {
   margin-top: 20%;
@@ -71,13 +85,19 @@
 .headline {
   font-size: x-large;
   font-weight: bold;
+  padding-top: 2vh;
 }
 .chat {
   margin-left: auto;
   margin-right: auto;
+  justify-content: center;
+  align-content: center;
   padding: 2% 0px;
+  min-width: 50%;
   max-width: 80%;
   min-height: 1%;
+  max-height: 100%;
+  resize: horizontal;
 }
 .queries-container {
   display: flex;
@@ -95,27 +115,33 @@
   overflow-y: auto;
 }
 .questionLabel {
-  width: 26%;
   align-self: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 .questionField {
-  width: 100%;
+  width: 80%;
   align-self: center;
 }
 .questionButton {
-  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 .questionForm {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 3px;
   width: 35%;
   margin-left: auto;
   margin-right: auto;
 }
-.questionForm input[type="text" i] {
+.questionForm input[type="text"] {
   padding-block: 0px;
   padding-inline: 0px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .queries::-webkit-scrollbar {
   display: none;
@@ -168,4 +194,7 @@ button.dialogButton:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+#fl {
+  padding-left: 20px;
 }

@@ -10,7 +10,6 @@ export interface Conversation {
   pdf: File;
   sourceId: string;
   uploadDate: Date;
-  Queries?: Query[];
 }
 export interface selectConvInterface {
   id: number;

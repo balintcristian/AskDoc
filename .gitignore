@@ -1,0 +1,7 @@
+env/
+.env
+.pyc
+backend/core/__pycache__/
+backend/core/api/__pycache__/
+backend/queries/__pycache__/
+backend/queries/api/__pycache__/

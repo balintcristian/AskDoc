@@ -8,18 +8,17 @@ const QueriesWidget = ({
 }) => {
   return (
     <ul className="queries">
-      {queryData &&
-        queryData
-          .filter((query) => query.conversation == convId)
-          .map((el) => (
-            <li key={el.id}>
-              <div>
-                Id: {el.id} ConversationID: {el.conversation}
-              </div>
-              <div>Question: {el.question}</div>
-              <div>Answer: {el.answer}</div>
-            </li>
-          ))}
+      {queryData
+        .filter((query) => query.conversation == convId)
+        .map((el) => (
+          <li key={el.id}>
+            <div>
+              Id: {el.id} ConversationID: {el.conversation}
+            </div>
+            <div>Question: {el.question}</div>
+            <div>Answer: {el.answer}</div>
+          </li>
+        ))}
     </ul>
   );
 };

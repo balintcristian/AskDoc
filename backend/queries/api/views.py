@@ -1,4 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework import status
 from ..models import Query,Conversation
 from .serializers import QuerySerializer,ConversationSerializer
 import requests
@@ -8,7 +10,9 @@ from dotenv import load_dotenv
 import os
 import json
 from django.shortcuts import render
+import logging
 
+logger = logging.getLogger(__name__)
 
 
 global api_key
@@ -21,8 +25,27 @@ class QueryViewSet(ModelViewSet):
 
 class ConversationViewSet(ModelViewSet):
     queryset = Conversation.objects.all()
-    serializer_class= ConversationSerializer
-
+    serializer_class = ConversationSerializer
+    def destroy(self, request, *args, **kwargs):
+        conversation = self.get_object()
+        headers = {
+        'x-api-key': api_key,
+        'Content-Type': 'application/json',
+        }
+        data = {
+        'sources': [conversation.sourceId],
+        }
+        self.perform_destroy(conversation)
+        try:
+            external_api_url = 'https://api.chatpdf.com/v1/sources/delete'
+            response = requests.post(external_api_url, json=data,headers=headers)
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            error_msg = f'Failed to delete conversation or call external API: {e}'
+            logger.error(error_msg)
+            return Response({'error': error_msg}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.info('Conversation deleted successfully and API call successful.')
+        return Response({'message': 'Conversation deleted successfully and API call successful.'}, status=status.HTTP_204_NO_CONTENT)
 
 def home(request):
     return render(request, 'home.html',{})
