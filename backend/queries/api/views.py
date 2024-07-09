@@ -47,6 +47,9 @@ class ConversationViewSet(ModelViewSet):
         logger.info('Conversation deleted successfully and API call successful.')
         return Response({'message': 'Conversation deleted successfully and API call successful.'}, status=status.HTTP_204_NO_CONTENT)
 
+def index(request):
+    return render(request, 'index.html',{})
+
 def home(request):
     return render(request, 'home.html',{})
 

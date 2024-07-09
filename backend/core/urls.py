@@ -12,7 +12,7 @@ urlpatterns = [
     path('api/',include('core.api.urls')),
     path('upload-pdf/', views.file_to_api, name='upload-pdf'),
     path('ask-question/', views.ask_question, name='ask-question'),
-    # path('index/',views.index, name="index"),
+    path('index/',views.index, name="index"),
     path('',views.home, name="home"),
 ]
 if settings.DEBUG:

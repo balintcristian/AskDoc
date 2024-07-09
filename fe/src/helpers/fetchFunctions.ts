@@ -1,4 +1,4 @@
-import { askQuestionEndpoint, conversationsEndpoint, queriesEndpoint } from "./endpoints";
+import { askQuestionEndpoint, queriesEndpoint } from "./endpoints";
 function getCSRFToken() {
   const token = document.querySelector('meta[name="device-monkey"]')!.getAttribute("content");
   if (token) return token;
