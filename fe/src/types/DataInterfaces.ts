@@ -3,6 +3,11 @@ export interface Query {
   question: string;
   answer: string;
   conversation: number;
+  uploadDate: Date;
+}
+export interface User {
+  id: number;
+  username: string;
 }
 export interface Conversation {
   id: number;
@@ -10,6 +15,7 @@ export interface Conversation {
   pdf: File;
   sourceId: string;
   uploadDate: Date;
+  author: string;
 }
 export interface selectConvInterface {
   id: number;

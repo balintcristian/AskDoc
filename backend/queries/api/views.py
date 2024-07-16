@@ -3,6 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..models import Query,Conversation
 from .serializers import QuerySerializer,ConversationSerializer
+from rest_framework.permissions import IsAuthenticated,AllowAny 
+
 import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -19,13 +21,25 @@ global api_key
 api_key=os.environ.get("API_KEY")
 load_dotenv()
 
+
 class QueryViewSet(ModelViewSet):
     queryset = Query.objects.all()
     serializer_class = QuerySerializer
+    permission_classes=[IsAuthenticated]
 
 class ConversationViewSet(ModelViewSet):
-    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        user =self.request.user
+        return Conversation.objects.filter(author=user.pk)
+    
+    def perform_create(self,serializer):
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
+        else:
+            print(serializer.errors)
+        
     def destroy(self, request, *args, **kwargs):
         conversation = self.get_object()
         headers = {
@@ -47,11 +61,11 @@ class ConversationViewSet(ModelViewSet):
         logger.info('Conversation deleted successfully and API call successful.')
         return Response({'message': 'Conversation deleted successfully and API call successful.'}, status=status.HTTP_204_NO_CONTENT)
 
-def index(request):
-    return render(request, 'index.html',{})
+def links(request):
+    return render(request, 'links.html',{})
 
-def home(request):
-    return render(request, 'home.html',{})
+def app(request):
+    return render(request, 'app.html',{})
 
 @csrf_exempt
 def ask_question(request):

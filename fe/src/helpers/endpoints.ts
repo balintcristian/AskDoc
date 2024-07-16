@@ -1,4 +1,5 @@
-export const addPdfEndpoint = `${import.meta.env.VITE_UPLOAD_PDF}/`;
-export const queriesEndpoint = `${import.meta.env.VITE_API_URL}/queries/`;
-export const conversationsEndpoint = `${import.meta.env.VITE_API_URL}/conversations/`;
-export const askQuestionEndpoint = `${import.meta.env.VITE_ASK_QUESTION}/`;
+export const addPdfEndpoint = "/upload-pdf/";
+export const queriesEndpoint = "/api/queries/";
+export const conversationsEndpoint = "/api/conversations/";
+export const askQuestionEndpoint = "/ask-question/";
+export const me = "/user/me/";

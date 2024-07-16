@@ -1,23 +1,15 @@
+import api from "../api/api";
 import { askQuestionEndpoint, queriesEndpoint } from "./endpoints";
-function getCSRFToken() {
-  const token = document.querySelector('meta[name="device-monkey"]')!.getAttribute("content");
-  if (token) return token;
-  else return "";
-}
 
 export const askQuestion = async (query: string, sourceId: string): Promise<string> => {
-  const response = await fetch(askQuestionEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCSRFToken(),
-    },
-    body: JSON.stringify({
+  const response = await api.post(
+    askQuestionEndpoint,
+    JSON.stringify({
       question: query,
       sourceId: sourceId,
-    }),
-  });
-  const responseData = await response.json();
+    })
+  );
+  const responseData = await response.data;
   return responseData.answer;
 };
 
@@ -27,13 +19,7 @@ export const postQuery = async (question: string, answer: string, conversationId
     answer: answer,
     conversation: conversationId,
   };
-  const response = await fetch(queriesEndpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCSRFToken(),
-    },
-    body: JSON.stringify(query),
-  });
-  return response.json();
+  const response = await api.post(queriesEndpoint, query);
+  const responseData = await response.data;
+  return responseData;
 };
